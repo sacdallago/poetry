@@ -1,5 +1,16 @@
 Session.setDefault("filter", undefined);
 Poems = new Meteor.Collection("poems");
+
+paginatedPoems = new Meteor.Pagination(Poems, {
+	availableSettings: {
+    	sort: true
+  	},
+  	infinite: true,	
+  	sort: {
+    	timestamp: 1
+  	}
+});
+
 var poemsHandle = undefined;
 
 Router.route('/poems/:_id',{
@@ -22,9 +33,11 @@ Router.route('/poems/:_id',{
 Router.route('/', {
 	loadingTemplate: 'loading',
 
+	/*
 	waitOn: function () {
     	return Meteor.subscribe('poems');
   	},
+  	*/
 
   	action: function () {
     	this.render('poems');

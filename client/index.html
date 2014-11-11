@@ -1,0 +1,79 @@
+<template name="scheleton">
+	{{> navigation}}
+	<div class="container">
+		{{> yield}}
+	</div>
+    <!-- {{> footer}} -->
+</template>
+
+<template name="navigation">
+	<nav class="navbar navbar-fixed-top navbar-default" role="navigation">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	       <h1 class="navbar-text">Poetry</h1>
+	    </div>
+	  </div>
+	</nav>
+</template>
+
+<template name="footer">
+	<div class="footer navbar-fixed-bottom navbar-inverse">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav">
+				<li><a href="#">FOOTER</a></li>
+			</ul>
+			
+		</div>
+	</div>
+</template>
+
+<template name="poems">
+	<ol class="unstyled">
+	{{#each poems}}
+		<li>{{> poemPills}}</li>
+	{{/each}}
+	</ol>
+</template>
+
+<template name="poemPills">
+	<ul class="media-list">
+	  <li class="media">
+	    <a class="media-left" href="#">
+	      COUNTBOX
+	    </a>
+	    <div class="media-body">
+	      <h4 class="media-heading">{{capitalizeTrim title}}</h4>
+	      {{trim poem}}
+	    </div>
+	  </li>
+	</ul>
+</template>
+
+<template name="poem">
+	{{#if _id}}
+		<article>
+			<h3>{{capitalize title}}</h3>
+			<p>{{poem}}</p>
+		</article>
+		<ol class="breadcrumb">
+			<li>{{title}}</li>
+			{{#if author}}
+				<li>{{author}}</li>
+			{{else}}
+				<li>Anonymous</li>
+			{{/if}}
+			<li>{{formatTime timestamp}}</li>
+		</ol>
+	{{else}}
+		Not found...
+	{{/if}}
+</template>
+
+<template name="loading">
+	Loading...
+</template>
+
+<head>
+	<title>Poetry</title>
+	 <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=no" />
+</head>

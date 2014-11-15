@@ -1,6 +1,16 @@
 .container{
-	margin-top: 60px;
 	margin-bottom: 40px;
+    text-align: justify;
+}
+
+.navbar {
+    border-radius: 0 !important;
+}
+
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus{
+    border:none;
+    outline:none;
 }
 
 @media (min-width: 768px) {
@@ -9,7 +19,7 @@
         margin-right: 0;
         padding: 46px;
     }
-  }
+}
 
 .colourAnimation {
     -webkit-animation: colour 2s infinite; /* Chrome, Safari, Opera */

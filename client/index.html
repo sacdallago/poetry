@@ -1,25 +1,30 @@
 <template name="scheleton">
-	{{> navigation}}
-	<div class="container">
-		{{#AnimateWithVelocity}}
-   			 <div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
-				{{> yield}}
-			</div>
-		{{/AnimateWithVelocity}}
-	</div>
-	
-	{{> yield "footer"}}
-    <!-- {{> footer}} -->
-</template>
-
-<template name="navigation">
-	<nav class="navbar navbar-fixed-top navbar-default" role="navigation">
+	<nav class="navbar navbar-default" role="navigation" style="margin-bottom:0;">
 	  <div class="container-fluid">
 	    <ul class="nav">
 	    	<li><h1 class="navbar-text">Poetry</h1></li>
 	    </ul>
 	  </div>
 	</nav>
+	<nav class="navbar navbar-inverse" role="navigation">
+	  <div class="container-fluid">
+	    <ul class="nav">
+	    	{{> yield "poemInfo"}}
+	    </ul>
+	  </div>
+	</nav>
+	{{#AnimateWithVelocity}}
+   	<div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
+		<div class="container">
+			{{> yield}}		
+		</div>
+	</div>
+	{{/AnimateWithVelocity}}
+    <!-- {{> footer}} -->
+</template>
+
+<template name="navigation">
+	
 </template>
 
 <template name="footer">
@@ -57,11 +62,28 @@
 	</ul>
 </template>
 
+<template name="editButtons">
+	<div class="btn-group" role="group" aria-label="...">
+		<button type="button" onclick="document.execCommand('bold',null,null);" class="btn btn-default">
+			Bold
+		</button>
+		<button type="button" onclick="document.execCommand('undo',null,null);" class="btn btn-default">
+			Undo
+		</button>
+		<button type="button" onclick="document.execCommand('italic',null,null);" class="btn btn-default">
+			Italic
+		</button>
+	</div>
+</template>
+
 <template name="poem">
 	{{#if _id}}
 		<article>
 			<h3>{{capitalize title}}</h3>
-			<p>{{poem}}</p>
+			{{> editButtons}}
+			<div id="poem" contenteditable="true">
+
+			</div>
 		</article>
 	{{else}}
 		Not found...
@@ -69,22 +91,12 @@
 </template>
 
 <template name="poemFooter">
-	{{#AnimateWithVelocity}}
-	<div data-animate data-property="opacity" data-duration="1000" data-from-value="0" data-to-value="1">
-		<div class="footer navbar-fixed-bottom navbar-inverse">
-			<div class="container-fluid">
-				<ul class="nav">
-				{{#if author}}
-					<li><p class="navbar-text">{{author}}</p></li>
-				{{else}}
-					<li><p class="navbar-text">Anonymous</p></li>
-				{{/if}}
-					<li><p class="navbar-text">{{formatTime timestamp}}</p></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	{{/AnimateWithVelocity}}
+	{{#if author}}
+		<li><p class="navbar-text">{{author}}</p></li>
+	{{else}}
+		<li><p class="navbar-text">Anonymous</p></li>
+	{{/if}}
+		<li><p class="navbar-text">{{formatTime timestamp}}</p></li>
 </template>
 
 <template name="loading">
@@ -96,4 +108,5 @@
 <head>
 	<title>Poetry</title>
 	 <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=no" />
+	 <!-- <script src="//cdn.ckeditor.com/4.4.5.1/standard/ckeditor.js"></script> -->
 </head>

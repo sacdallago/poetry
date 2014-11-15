@@ -27,7 +27,7 @@ Router.route('/poems/:_id',{
 
   	action: function () {
     	this.render('poem');
-      this.render('poemFooter', {to: 'footer'});
+      this.render('poemFooter', {to: 'poemInfo'});
   	}
 });
 
@@ -80,3 +80,9 @@ Template.poems.helpers({
 		return Poems.find();
 	}
 });
+
+Template.poem.rendered = function(){
+  //CKEDITOR.disableAutoInline = true;
+  //CKEDITOR.inline('poem');
+  document.getElementById('poem').innerHTML = Poems.findOne().poem;
+};

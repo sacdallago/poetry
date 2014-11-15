@@ -30,7 +30,8 @@ Meteor.startup(function(){
 	for(var i=0;i<100;i++){
 		Poems.insert({
 			title: lipsum[i%6].substr(0, i%6+20),
-			poem: lipsum[i%6],
+			poem: "<p>" + lipsum[i%6] + "</p><p>"+ lipsum[i%5] + "</p><p>"+ lipsum[i%3] + "</p>",
+			//poem: lipsum[i%6] + lipsum[i%5] + lipsum[i%3],
 			timestamp: Date.now()-i*30
 		});
 	}

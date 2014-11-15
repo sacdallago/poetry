@@ -1,21 +1,24 @@
 var Poems = new Meteor.Collection('poems');
 
-/*
 Meteor.publish('poems', function(id) {
-	if(id){
-		return Poems.find({_id:id});
-	} else {
-		return Poems.find();
-	}
-});
-*/
+				if(id){
+					return Poems.find({_id:id});
+				} else {
+					return Poems.find();
+				}
+			});
 
+/*
 var paginatedPoems = new Meteor.Pagination(Poems, {
 	availableSettings: {
-    	sort: true
+    	sort: true,
+    	auth: true
   	},
-  	infinite: true,	
   	sort: {
-    	timestamp: 1
+    	timestamp: -1
+  	},
+  	auth : function(){
+  		return true;
   	}
 });
+*/

@@ -1,17 +1,23 @@
 <template name="scheleton">
 	{{> navigation}}
 	<div class="container">
-		{{> yield}}
+		{{#AnimateWithVelocity}}
+   			 <div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
+				{{> yield}}
+			</div>
+		{{/AnimateWithVelocity}}
 	</div>
+	
+	{{> yield "footer"}}
     <!-- {{> footer}} -->
 </template>
 
 <template name="navigation">
 	<nav class="navbar navbar-fixed-top navbar-default" role="navigation">
 	  <div class="container-fluid">
-	    <div class="navbar-header">
-	       <h1 class="navbar-text">Poetry</h1>
-	    </div>
+	    <ul class="nav">
+	    	<li><h1 class="navbar-text">Poetry</h1></li>
+	    </ul>
 	  </div>
 	</nav>
 </template>
@@ -28,21 +34,20 @@
 </template>
 
 <template name="poems">
-	<ol class="unstyled">
-	{{#each poems}}
-		<li>{{> poemPills}}</li>
-	{{/each}}
-	
   	{{> pages}}
   	{{> pagesNav}}
-	</ol>
+  	<ol class="list-unstyled">
+  		{{#each poems}}
+  			{{> poemPills}}
+  		{{/each}}
+  	</ol>
 </template>
 
 <template name="poemPills">
 	<ul class="media-list">
 	  <li class="media">
-	    <a class="media-left" href="#">
-	      COUNTBOX
+	    <a class="media-left" href="/poems/{{_id}}">
+	      {{formatTime timestamp}}
 	    </a>
 	    <div class="media-body">
 	      <h4 class="media-heading">{{capitalizeTrim title}}</h4>
@@ -58,22 +63,34 @@
 			<h3>{{capitalize title}}</h3>
 			<p>{{poem}}</p>
 		</article>
-		<ol class="breadcrumb">
-			<li>{{title}}</li>
-			{{#if author}}
-				<li>{{author}}</li>
-			{{else}}
-				<li>Anonymous</li>
-			{{/if}}
-			<li>{{formatTime timestamp}}</li>
-		</ol>
 	{{else}}
 		Not found...
 	{{/if}}
 </template>
 
+<template name="poemFooter">
+	{{#AnimateWithVelocity}}
+	<div data-animate data-property="opacity" data-duration="1000" data-from-value="0" data-to-value="1">
+		<div class="footer navbar-fixed-bottom navbar-inverse">
+			<div class="container-fluid">
+				<ul class="nav">
+				{{#if author}}
+					<li><p class="navbar-text">{{author}}</p></li>
+				{{else}}
+					<li><p class="navbar-text">Anonymous</p></li>
+				{{/if}}
+					<li><p class="navbar-text">{{formatTime timestamp}}</p></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	{{/AnimateWithVelocity}}
+</template>
+
 <template name="loading">
-	Loading...
+	<div class="colourAnimation">
+		Loading...
+	</div>
 </template>
 
 <head>

@@ -2,3 +2,35 @@
 	margin-top: 60px;
 	margin-bottom: 40px;
 }
+
+@media (min-width: 768px) {
+  .container{
+        margin-left: 0;
+        margin-right: 0;
+        padding: 46px;
+    }
+  }
+
+.colourAnimation {
+    -webkit-animation: colour 2s infinite; /* Chrome, Safari, Opera */
+    animation: colour 2s infinite;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes colour {
+    from {
+    	color: black;
+    }
+    to {
+    	color: red;
+    }
+}
+
+@keyframes colour {
+    from {
+    	color: black;
+    }
+    to {
+    	color: red;
+    }
+}

@@ -1,26 +1,72 @@
 <template name="scheleton">
-	<nav class="navbar navbar-default" role="navigation" style="margin-bottom:0;">
-	  <div class="container-fluid">
-	    <ul class="nav">
-	    	<li><h1 class="navbar-text">Poetry</h1></li>
-	    </ul>
-	  </div>
-	</nav>
-	<nav class="navbar navbar-inverse" role="navigation">
-	  <div class="container-fluid">
-	    <ul class="nav">
-	    	{{> yield "poemInfo"}}
-	    </ul>
-	  </div>
-	</nav>
-	{{#AnimateWithVelocity}}
-   	<div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
-		<div class="container">
-			{{> yield}}		
+    	{{> sidebar}}
+  	<div class="pusher">
+		{{#if fullscreen}}
+		<nav class="navbar navbar-default" role="navigation" style="margin-bottom:0;">
+		  <div class="container-fluid">
+		    <ul class="nav">
+		    	<li><h1 class="navbar-text">Poetry</h1></li>
+		    </ul>
+		  </div>
+		</nav>
+		<nav class="navbar navbar-inverse" role="navigation">
+		  <div class="container-fluid">
+		    <ul class="nav">
+		    	{{> yield "poemInfo"}}
+		    </ul>
+		  </div>
+		</nav>
+		{{/if}}
+		{{#AnimateWithVelocity}}
+	   	<div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
+			<div class="container">
+				{{> yield}}		
+			</div>
 		</div>
+		{{/AnimateWithVelocity}}
 	</div>
-	{{/AnimateWithVelocity}}
     <!-- {{> footer}} -->
+</template>
+
+<template name="sidebar">
+	<div class="ui left vertical inverted labeled icon sidebar menu scale down">
+	  <a class="item">
+	    <i class="home icon"></i>
+	    Home
+	  </a>
+	  <a class="item">
+	    <i class="block layout icon"></i>
+	    Topics
+	  </a>
+	  <a class="item">
+	    <i class="smile icon"></i>
+	    Friends
+	  </a>
+	  <a class="item">
+	    <i class="calendar icon"></i>
+	    History
+	  </a>
+	  <a class="item">
+	    <i class="mail icon"></i>
+	    Messages
+	  </a>
+	  <a class="item">
+	    <i class="chat icon"></i>
+	    Discussions
+	  </a>
+	  <a class="item">
+	    <i class="trophy icon"></i>
+	    Achievements
+	  </a>
+	  <a class="item">
+	    <i class="shop icon"></i>
+	    Store
+	  </a>
+	  <a class="item">
+	    <i class="settings icon"></i>
+	    Settings
+	  </a>
+	</div>
 </template>
 
 <template name="navigation">
@@ -49,17 +95,20 @@
 </template>
 
 <template name="poemPills">
-	<ul class="media-list">
-	  <li class="media">
-	    <a class="media-left" href="/poems/{{_id}}">
-	      {{formatTime timestamp}}
-	    </a>
-	    <div class="media-body">
-	      <h4 class="media-heading">{{capitalizeTrim title}}</h4>
+	<div class="ui card">
+	  <div class="content">
+	    <a class="header" href="/poems/{{_id}}">{{capitalizeTrim title}}</a>
+	    <div class="meta">
+	      <span class="date">{{formatTime timestamp}}</span>
+	    </div>
+	    <div class="description">
 	      {{trim poem}}
 	    </div>
-	  </li>
-	</ul>
+	  </div>
+	  <div class="extra content">
+	  	test
+	  </div>
+	</div>
 </template>
 
 <template name="editButtons">
@@ -67,23 +116,28 @@
 		<button type="button" onclick="document.execCommand('bold',null,null);" class="btn btn-default">
 			Bold
 		</button>
+		<button type="button" onclick="document.execCommand('italic',null,null);" class="btn btn-default">
+			Italic
+		</button>
+	</div>
+	<div class="btn-group" role="group" aria-label="...">
 		<button type="button" onclick="document.execCommand('undo',null,null);" class="btn btn-default">
 			Undo
 		</button>
-		<button type="button" onclick="document.execCommand('italic',null,null);" class="btn btn-default">
-			Italic
+	</div>
+	<div class="btn-group" role="group" aria-label="...">
+		<button type="button" class="btn btn-default fullscreen">
+			Full Screen
 		</button>
 	</div>
 </template>
 
 <template name="poem">
 	{{#if _id}}
-		<article>
+		<article id="poemContainer">
 			<h3>{{capitalize title}}</h3>
 			{{> editButtons}}
-			<div id="poem" contenteditable="true">
-
-			</div>
+			<div id="poem" contenteditable="false"></div>
 		</article>
 	{{else}}
 		Not found...

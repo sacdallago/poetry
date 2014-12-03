@@ -7,6 +7,17 @@
     border-radius: 0 !important;
 }
 
+#poem{
+    font-family: Lato,Helvetica,Arial,sans-serif;
+    font-size: 18px;
+    line-height: 1.72222;
+    color: #34495e;
+}
+
+#poem p{
+    margin: 0;
+}
+
 [contenteditable="true"]:active,
 [contenteditable="true"]:focus{
     border:none;

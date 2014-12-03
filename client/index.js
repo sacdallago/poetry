@@ -1,5 +1,7 @@
 Session.setDefault("filter", {_id:'jzR6Af7cKaCewWxJf'});
 Poems = new Meteor.Collection("poems");
+var poemsHandle = undefined;
+Session.setDefault("editor", false);
 
 /*
 paginatedPoems = new Meteor.Pagination(Poems, {
@@ -11,78 +13,59 @@ paginatedPoems = new Meteor.Pagination(Poems, {
 });
 */
 
-var poemsHandle = undefined;
+var toggleFullScreen = function() {
+      if (!document.fullscreenElement &&    // alternative standard method
+            !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+            if (document.documentElement.requestFullscreen) {
+                  document.documentElement.requestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                  document.documentElement.msRequestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                  document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                  document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+      } else {
+            if (document.exitFullscreen) {
+                  document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                  document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                  document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                  document.webkitExitFullscreen();
+            }
+      }
+};
 
-Router.route('/poems/:_id',{
-	loadingTemplate: 'loading',
-
-	waitOn: function () {
-    // return one handle, a function, or an array
-    	return Meteor.subscribe('poems', this.params._id);
-  	},
-
-  	data: function () {
-  		return Poems.findOne({_id: this.params._id});
-  	},
-
-  	action: function () {
-    	this.render('poem');
-      this.render('poemFooter', {to: 'poemInfo'});
-  	}
+Template.scheleton.helpers({
+      fullscreen: function(){
+            return !Session.get('editor');
+      }
 });
 
-/*
-Router.route('/insert/:title/:poem',{
-	loadingTemplate: 'loading',
-
-	waitOn: function () {
-    // return one handle, a function, or an array
-    	id = Poems.insert({title:this.params.title,timestamp: Date.now(), poem:this.params.poem});
-    	console.log(id);
-    	return Meteor.subscribe('poems', id);
-    },
-
-  	action: function () {
-    	Router.go('/');
-  	}
-});
-
-
-Router.route('methodExample', {
-        path: '/api/call',
-        where: 'server',
-        action: function() {
-            // GET, POST, PUT, DELETE
-            var requestMethod = this.request.method;
-            // Data from a POST request
-            var requestData = this.request.body;
-            // Could be, e.g. application/xml, etc.
-            this.response.writeHead(200, {'Content-Type': 'text/html'});
-            this.response.end('<html><body>Your request was a ' + requestMethod + '</body></html>');
-        }
-    });
-*/
-
-Router.route('/', {
-	loadingTemplate: 'loading',
-
-	waitOn: function () {
-    	return Meteor.subscribe('poems');
-  	},
-
-  	action: function () {
-    	this.render('poems');
-  	}
-});
-
-Template.poems.helpers({
-	poems : function(){
-		return Poems.find();
-	}
+Template.poem.events({
+    'click .fullscreen': function(event){
+      $('.sidebar').sidebar('toggle');
+            //toggleFullScreen();
+      }
 });
 
 Template.poem.rendered = function(){
-  //CKEDITOR.disableAutoInline = true;
-  //CKEDITOR.inline('poem');
-  document.getElementById('poem').innerHTML = Poems.findOne().poem;
+      document.getElementById('poem').innerHTML = Poems.findOne().poem;
+      editor = new MediumEditor('#poem', {
+            disableToolbar: true,
+            forcePlainText: true,
+            placeholder: "..."
+      });
+
+      document.addEventListener("webkitfullscreenchange", function(event){
+          Session.set('editor', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
+      });
+      document.addEventListener("mozfullscreenchange", function(event){
+          Session.set('editor', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
+      });
+      document.addEventListener("msfullscreenchange", function(event){
+          Session.set('editor', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
+      });
 };

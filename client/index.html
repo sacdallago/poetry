@@ -1,12 +1,14 @@
 <template name="scheleton">
     	{{> sidebar}}
-    	<div class="ui black big launch right attached fixed button home" style="position:fixed;">
-  		<i class="content icon"></i>
-  		<span class="text">Poeti.ga</span>
+    	<div class="ui launch icon button fixed attached top right black home" >
+  		<i class="icon content"></i>
 	</div>
-    	{{#if fullscreen}}
-
+	
+    	{{#if currentUser}}
+    	{{else}}
+    		{{> login}}
     	{{/if}}
+
   	<div class="pusher">
 		{{#AnimateWithVelocity}}
 	   	<div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
@@ -22,13 +24,21 @@
 <template name="sidebar">
 	<div class="ui thin left vertical inverted labeled icon sidebar menu homemenu">
 	  <a href='/' class="item">
-	    Home
+	  	<i class="home icon"></i>
+	    	Home
 	  </a>
-	  {{#if fullscreenPossible}}
-	  <a href='/' class="item">
-	    Home
+	  <a class="item login">
+	  	<i class="user icon"></i>
+	    	Log-in
 	  </a>
-	  {{/if}}
+	  <a href="/register" class="item">
+	  	<i class="checkmark icon"></i>
+	    	Register
+	  </a>
+	  <a class="item fullscreen">
+	  	<i class="expand icon"></i>
+	    	Full Screen
+	  </a>
 	  {{> yield "poemInfo"}}
 	</div>
 </template>
@@ -109,7 +119,7 @@
 	</div>
 
 
-	<div class="ui modal">
+	<div class="ui modal termsandconditions">
 	  <i class="close icon"></i>
 	  <div class="header">
 	    Terms of service
@@ -125,17 +135,34 @@
 	</div>
 </template>
 
-<template name="navigation">
-	
-</template>
+<template name="login">
+	<div class="ui modal loginmodal">
+	  <i class="close icon"></i>
+	  <div class="header">
+	    Login
+	  </div>
+	  <div class="content">
+	    <div class="ui form">
+		<h4 class="ui dividing header">Account Info</h4>
 
-<template name="footer">
-	<div class="footer navbar-fixed-bottom navbar-inverse">
-		<div class="container-fluid">
-			<ul class="nav navbar-nav">
-				<li><a href="#">FOOTER</a></li>
-			</ul>
-		</div>
+		    <div class="required field">
+		      <label>Email</label>
+		      <div class="ui icon input">
+		        <input type="text" name="email" placeholder="Email">
+		        <i class="user icon"></i>
+		      </div>
+		    </div>
+		    <div class="required field">
+		      <label>Password</label>
+		      <div class="ui icon input">
+		        <input name="password"  type="password" placeholder="Password">
+		        <i class="lock icon"></i>
+		      </div>
+		    </div>
+
+		    <div class="ui submit button">Log-in</div>
+	</div>
+	  </div>
 	</div>
 </template>
 
@@ -162,24 +189,32 @@
 	      {{{trim poem}}}
 	    </div>
 	  </div>
-	  <div class="extra content">
-	  	test
-	  </div>
 	</div>
 </template>
 
 <template name="poem">
 	{{#if _id}}
+		{{#if editing}}
 		<article id="poemContainer">
 			<h1 style="magin:0;border:0;padding0;">{{capitalize title}}</h1>
-			<div id="poem" contenteditable="false"></div>
+			<div id="poem" contenteditable="false">{{{poem}}}</div>
 		</article>
+		{{else}}
+		<article id="poemContainer">
+			<h1 style="magin:0;border:0;padding0;">{{capitalize title}}</h1>
+			<div id="poem" contenteditable="false">{{{poem}}}</div>
+		</article>
+		{{/if}}
 	{{else}}
 		Not found...
 	{{/if}}
 </template>
 
 <template name="poemFooter">
+	<a class="item edit">
+	  	<i class="pencil icon"></i>
+	    	Edit
+	  </a>
 	<div class="test">
 		{{#if author}}
 			<span class="item">{{author}}</span>

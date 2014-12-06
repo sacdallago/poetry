@@ -78,6 +78,6 @@ Template.register.rendered = function(){
 
 Template.register.events({
 	'click a' : function(event){
-		$('.ui.modal').modal('show');
+		$('.termsandconditions').modal('show');
 	}
 });

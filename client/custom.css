@@ -1,10 +1,14 @@
 .container{
-	margin-bottom: 40px;
+    margin-bottom: 40px;
     text-align: justify;
 }
 
 .navbar {
     border-radius: 0 !important;
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 #poem{

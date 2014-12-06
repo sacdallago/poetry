@@ -28,10 +28,12 @@ Router.route('/', {
     }
 });
 
-Template.poems.helpers({
-  poems : function(){
-    return Poems.find();
-  }
+Router.route('/register', {
+  loadingTemplate: 'loading',
+
+    action: function () {
+      this.render('register');
+    }
 });
 
 

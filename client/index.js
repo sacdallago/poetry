@@ -46,16 +46,28 @@ Template.scheleton.helpers({
 
 Template.poem.events({
     'click .fullscreen': function(event){
-      $('.sidebar').sidebar('toggle');
-            //toggleFullScreen();
+            toggleFullScreen();
       }
+});
+
+Template.scheleton.events({
+    'click .home': function(event){
+      $('.homemenu').sidebar('toggle');
+      }
+});
+
+Template.poems.helpers({
+    poems : function(){
+      return Poems.find();
+    }
 });
 
 Template.poem.rendered = function(){
       document.getElementById('poem').innerHTML = Poems.findOne().poem;
       editor = new MediumEditor('#poem', {
-            disableToolbar: true,
+            //disableToolbar: true,
             forcePlainText: true,
+            buttons: ['bold','italic','quote'],
             placeholder: "..."
       });
 

@@ -1,22 +1,13 @@
 <template name="scheleton">
     	{{> sidebar}}
+    	<div class="ui black big launch right attached fixed button home" style="position:fixed;">
+  		<i class="content icon"></i>
+  		<span class="text">Poeti.ga</span>
+	</div>
+    	{{#if fullscreen}}
+
+    	{{/if}}
   	<div class="pusher">
-		{{#if fullscreen}}
-		<nav class="navbar navbar-default" role="navigation" style="margin-bottom:0;">
-		  <div class="container-fluid">
-		    <ul class="nav">
-		    	<li><h1 class="navbar-text">Poetry</h1></li>
-		    </ul>
-		  </div>
-		</nav>
-		<nav class="navbar navbar-inverse" role="navigation">
-		  <div class="container-fluid">
-		    <ul class="nav">
-		    	{{> yield "poemInfo"}}
-		    </ul>
-		  </div>
-		</nav>
-		{{/if}}
 		{{#AnimateWithVelocity}}
 	   	<div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
 			<div class="container">
@@ -29,43 +20,108 @@
 </template>
 
 <template name="sidebar">
-	<div class="ui left vertical inverted labeled icon sidebar menu scale down">
-	  <a class="item">
-	    <i class="home icon"></i>
+	<div class="ui thin left vertical inverted labeled icon sidebar menu homemenu">
+	  <a href='/' class="item">
 	    Home
 	  </a>
-	  <a class="item">
-	    <i class="block layout icon"></i>
-	    Topics
+	  {{#if fullscreenPossible}}
+	  <a href='/' class="item">
+	    Home
 	  </a>
-	  <a class="item">
-	    <i class="smile icon"></i>
-	    Friends
-	  </a>
-	  <a class="item">
-	    <i class="calendar icon"></i>
-	    History
-	  </a>
-	  <a class="item">
-	    <i class="mail icon"></i>
-	    Messages
-	  </a>
-	  <a class="item">
-	    <i class="chat icon"></i>
-	    Discussions
-	  </a>
-	  <a class="item">
-	    <i class="trophy icon"></i>
-	    Achievements
-	  </a>
-	  <a class="item">
-	    <i class="shop icon"></i>
-	    Store
-	  </a>
-	  <a class="item">
-	    <i class="settings icon"></i>
-	    Settings
-	  </a>
+	  {{/if}}
+	  {{> yield "poemInfo"}}
+	</div>
+</template>
+
+<template name="register">
+	<div class="ui form">
+	  <h4 class="ui dividing header">Personal Information</h4>
+	  <div class="two fields">
+	    <div class="field">
+	      <label>Name</label>
+	      <div class="two fields">
+	        <div class="field">
+	          <input type="text" name="first-name" placeholder="First Name">
+	        </div>
+	        <div class="field">
+	          <input type="text" name="last-name" placeholder="Last Name">
+	        </div>
+	      </div>
+	    </div>
+	    <div class="field">
+	      <label>Gender</label>
+	      <div class="ui selection dropdown">
+	        <input type="hidden" name="gender">
+	        <div class="default text">Gender</div>
+	        <i class="dropdown icon"></i>
+	        <div class="menu">
+	          <div class="item" data-value="male">Male</div>
+	          <div class="item" data-value="female">Female</div>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+	  <div class="field">
+	    <label>Biography</label>
+	    <textarea name="bio"></textarea>
+	  </div>
+	  <h4 class="ui dividing header">Account Info</h4>
+	  <div class="two fields">
+	    <div class="required field">
+	      <label>Email</label>
+	      <div class="ui icon input">
+	        <input type="text" name="email" placeholder="Email">
+	        <i class="user icon"></i>
+	      </div>
+	    </div>
+	    <div class="required field">
+	      <label>Password</label>
+	      <div class="ui icon input">
+	        <input name="password"  type="password" placeholder="Password">
+	        <i class="lock icon"></i>
+	      </div>
+	    </div>
+	  </div>
+	   
+	   <h4 class="ui dividing header">Settings</h4>
+	  <h5 class="ui header">Privacy</h5>
+	  <div class="field">
+	    <div class="ui toggle checkbox">
+	      <input type="radio" name="privacy">
+	      <label>Allow <b>anyone</b> to see my account</label>
+	    </div>
+	  </div>
+	  
+	  <div class="ui hidden divider"></div>
+	  <div class="field">
+	    <div class="ui checkbox">
+	      <input type="checkbox" name="terms">
+	      <label>I agree to the <a href="#">Terms of Service</a>.</label>
+	    </div>
+	  </div>
+
+	  <div class="ui error message">
+	    <div class="header">We noticed some issues</div>
+	  </div>
+
+	  <div class="ui submit button">Register</div>
+
+	</div>
+
+
+	<div class="ui modal">
+	  <i class="close icon"></i>
+	  <div class="header">
+	    Terms of service
+	  </div>
+	  <div class="content">
+	    <div class="description">
+	     Here are the terms!
+	    </div>
+	  </div>
+	  <div class="actions">
+	    <div class="ui button">Close</div>
+	  </div>
 	</div>
 </template>
 
@@ -79,7 +135,6 @@
 			<ul class="nav navbar-nav">
 				<li><a href="#">FOOTER</a></li>
 			</ul>
-			
 		</div>
 	</div>
 </template>
@@ -87,11 +142,13 @@
 <template name="poems">
   	{{> pages}}
   	{{> pagesNav}}
-  	<ol class="list-unstyled">
-  		{{#each poems}}
-  			{{> poemPills}}
-  		{{/each}}
-  	</ol>
+  	<div class="ui four column grid">
+	  	{{#each poems}}
+	  	<div class="column">	
+	  		{{> poemPills}}
+	  	</div>
+	  	{{/each}}
+  	</div>
 </template>
 
 <template name="poemPills">
@@ -102,7 +159,7 @@
 	      <span class="date">{{formatTime timestamp}}</span>
 	    </div>
 	    <div class="description">
-	      {{trim poem}}
+	      {{{trim poem}}}
 	    </div>
 	  </div>
 	  <div class="extra content">
@@ -111,32 +168,10 @@
 	</div>
 </template>
 
-<template name="editButtons">
-	<div class="btn-group" role="group" aria-label="...">
-		<button type="button" onclick="document.execCommand('bold',null,null);" class="btn btn-default">
-			Bold
-		</button>
-		<button type="button" onclick="document.execCommand('italic',null,null);" class="btn btn-default">
-			Italic
-		</button>
-	</div>
-	<div class="btn-group" role="group" aria-label="...">
-		<button type="button" onclick="document.execCommand('undo',null,null);" class="btn btn-default">
-			Undo
-		</button>
-	</div>
-	<div class="btn-group" role="group" aria-label="...">
-		<button type="button" class="btn btn-default fullscreen">
-			Full Screen
-		</button>
-	</div>
-</template>
-
 <template name="poem">
 	{{#if _id}}
 		<article id="poemContainer">
-			<h3>{{capitalize title}}</h3>
-			{{> editButtons}}
+			<h1 style="magin:0;border:0;padding0;">{{capitalize title}}</h1>
 			<div id="poem" contenteditable="false"></div>
 		</article>
 	{{else}}
@@ -145,17 +180,19 @@
 </template>
 
 <template name="poemFooter">
-	{{#if author}}
-		<li><p class="navbar-text">{{author}}</p></li>
-	{{else}}
-		<li><p class="navbar-text">Anonymous</p></li>
-	{{/if}}
-		<li><p class="navbar-text">{{formatTime timestamp}}</p></li>
+	<div class="test">
+		{{#if author}}
+			<span class="item">{{author}}</span>
+		{{else}}
+			<span class="item">Anonymous</span>
+		{{/if}}
+			<span class="item">{{formatTime timestamp}}</span>
+	</div>
 </template>
 
 <template name="loading">
-	<div class="colourAnimation">
-		Loading...
+	<div class="ui active dimmer">
+	    <div class="ui large text loader">Loading</div>
 	</div>
 </template>
 

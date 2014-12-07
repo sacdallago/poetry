@@ -1,0 +1,17 @@
+@media print {
+    .noprint {
+        display: none !important;
+    }
+    .print {
+    	display: inline;
+    }
+    body, p, article, div, h1, h2, h3, #poem{
+        color: black !important;
+    }
+}
+
+@media screen {
+    .print {
+    	display: none;
+    }
+  }

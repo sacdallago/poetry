@@ -3,7 +3,7 @@ Template.register.rendered = function(){
 	$('.dropdown').dropdown();
 
 
-	var form = $('.ui.form').form({
+	var form = $('.ui.form.registerForm').form({
 	    first: {
 	      identifier  : 'first-name',
 	      rules: [
@@ -71,7 +71,30 @@ Template.register.rendered = function(){
 	    on     : 'blur',
 	    onSuccess : function(event){
 	        event.preventDefault();
-	        console.log(this);
+
+	        if(Meteor.user()){
+	        	Router.go('/');
+	        	return;
+	        }
+
+	        var user = {
+	        	email : $('#registerEmail').val(),
+	        	password: $('#registerPassword').val(),
+	        	profile : {
+	        		first : $('#registerFirst').val(),
+	        		last : $('#registerLast').val(),
+	        		gender : $('#registerGender').val(),
+	        		bio : $('#registerBio').val()
+	        	}
+	        };
+
+	        Accounts.createUser(user,function(error){
+	        	if(error){
+	        		console.log("Register error!");
+	        	} else {
+	        		Router.go('/');
+	        	}
+	        });
 	    }
 	  });
   };

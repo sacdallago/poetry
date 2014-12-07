@@ -1,6 +1,6 @@
 Template.login.rendered = function(){
 
-	var form = $('.ui.form').form({
+	var form = $('.ui.form.loginForm').form({
 	    username: {
 	      identifier : 'email',
 	      rules: [
@@ -23,7 +23,15 @@ Template.login.rendered = function(){
 	  }, {
 	    onSuccess : function(event){
 	        event.preventDefault();
-	        console.log(this);
+	        var user = $('#loginEmail').val();
+	        var password = $('#loginPassword').val();
+	        Meteor.loginWithPassword(user, password, function(error){
+	        	if(error){
+	        		console.log("Login error");
+	        	} else {
+	        		$('.loginmodal').modal('hide');
+	        	}
+	        });
 	    }
 	  });
   };

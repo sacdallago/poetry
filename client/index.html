@@ -1,7 +1,8 @@
 <template name="scheleton">
+	{{> connectionStatus}}
     	{{> sidebar}}
-    	<div class="ui launch icon button fixed attached top right black home" >
-  		<i class="icon content"></i>
+	    <div class="ui launch icon button fixed attached top right black home noprint" >
+	  	<i class="icon content"></i>
 	</div>
 	
     	{{#if currentUser}}
@@ -18,7 +19,15 @@
 		</div>
 		{{/AnimateWithVelocity}}
 	</div>
-    <!-- {{> footer}} -->
+</template>
+
+<template name="connectionStatus">
+	{{#if connectionLost}}
+	<div class="ui active dimmer">
+	    <div class="ui large text loader">It appears you have lost the connection to the server.
+	    	Let's wait to see if the problem fixes itself or try to reload the page!</div>
+	</div>
+	{{/if}}
 </template>
 
 <template name="sidebar">
@@ -27,14 +36,26 @@
 	  	<i class="home icon"></i>
 	    	Home
 	  </a>
-	  <a class="item login">
-	  	<i class="user icon"></i>
-	    	Log-in
-	  </a>
-	  <a href="/register" class="item">
-	  	<i class="checkmark icon"></i>
-	    	Register
-	  </a>
+	{{#if currentUser}}
+		<a class="item newPoem">
+	  		<i class="add circle icon"></i>
+	    		New Poem
+	  	</a>
+		<a class="item logout">
+	  		<i class="user icon"></i>
+	    		Log-out
+	  	</a>
+	  	
+    	{{else}}
+    		<a class="item login">
+	  		<i class="user icon"></i>
+	    		Log-in
+	  	</a>
+		<a href="/register" class="item">
+		  	<i class="checkmark icon"></i>
+		    	Register
+		</a>
+    	{{/if}}
 	  <a class="item fullscreen">
 	  	<i class="expand icon"></i>
 	    	Full Screen
@@ -44,24 +65,24 @@
 </template>
 
 <template name="register">
-	<div class="ui form">
+	<div class="ui form registerForm">
 	  <h4 class="ui dividing header">Personal Information</h4>
 	  <div class="two fields">
 	    <div class="field">
 	      <label>Name</label>
 	      <div class="two fields">
 	        <div class="field">
-	          <input type="text" name="first-name" placeholder="First Name">
+	          <input type="text" id="registerFirst" name="first-name" placeholder="First Name">
 	        </div>
 	        <div class="field">
-	          <input type="text" name="last-name" placeholder="Last Name">
+	          <input type="text" id="registerLast" name="last-name" placeholder="Last Name">
 	        </div>
 	      </div>
 	    </div>
 	    <div class="field">
 	      <label>Gender</label>
 	      <div class="ui selection dropdown">
-	        <input type="hidden" name="gender">
+	        <input id="registerGender" type="hidden" name="gender">
 	        <div class="default text">Gender</div>
 	        <i class="dropdown icon"></i>
 	        <div class="menu">
@@ -73,21 +94,21 @@
 	  </div>
 	  <div class="field">
 	    <label>Biography</label>
-	    <textarea name="bio"></textarea>
+	    <textarea id="registerBio" name="bio"></textarea>
 	  </div>
 	  <h4 class="ui dividing header">Account Info</h4>
 	  <div class="two fields">
 	    <div class="required field">
 	      <label>Email</label>
 	      <div class="ui icon input">
-	        <input type="text" name="email" placeholder="Email">
+	        <input id="registerEmail" type="text" name="email" placeholder="Email">
 	        <i class="user icon"></i>
 	      </div>
 	    </div>
 	    <div class="required field">
 	      <label>Password</label>
 	      <div class="ui icon input">
-	        <input name="password"  type="password" placeholder="Password">
+	        <input id="registerPassword" name="password"  type="password" placeholder="Password">
 	        <i class="lock icon"></i>
 	      </div>
 	    </div>
@@ -95,12 +116,6 @@
 	   
 	   <h4 class="ui dividing header">Settings</h4>
 	  <h5 class="ui header">Privacy</h5>
-	  <div class="field">
-	    <div class="ui toggle checkbox">
-	      <input type="radio" name="privacy">
-	      <label>Allow <b>anyone</b> to see my account</label>
-	    </div>
-	  </div>
 	  
 	  <div class="ui hidden divider"></div>
 	  <div class="field">
@@ -142,20 +157,20 @@
 	    Login
 	  </div>
 	  <div class="content">
-	    <div class="ui form">
+	    <div class="ui form loginForm">
 		<h4 class="ui dividing header">Account Info</h4>
 
 		    <div class="required field">
 		      <label>Email</label>
 		      <div class="ui icon input">
-		        <input type="text" name="email" placeholder="Email">
+		        <input type="text" name="email" id="loginEmail" placeholder="Email">
 		        <i class="user icon"></i>
 		      </div>
 		    </div>
 		    <div class="required field">
 		      <label>Password</label>
 		      <div class="ui icon input">
-		        <input name="password"  type="password" placeholder="Password">
+		        <input name="password" id="loginPassword" type="password" placeholder="Password">
 		        <i class="lock icon"></i>
 		      </div>
 		    </div>
@@ -194,27 +209,42 @@
 
 <template name="poem">
 	{{#if _id}}
-		{{#if editing}}
 		<article id="poemContainer">
-			<h1 style="magin:0;border:0;padding0;">{{capitalize title}}</h1>
-			<div id="poem" contenteditable="false">{{{poem}}}</div>
+			<h1 id="poemTitle" style="magin:0;border:0;padding0;">{{capitalize title}}</h1>
+			<div id="poem">{{{poem}}}</div>
 		</article>
-		{{else}}
-		<article id="poemContainer">
-			<h1 style="magin:0;border:0;padding0;">{{capitalize title}}</h1>
-			<div id="poem" contenteditable="false">{{{poem}}}</div>
-		</article>
-		{{/if}}
+		<div class="print" style="line-height: 100px">
+			by 
+			{{#if author}}
+				<span class="item">{{author}}</span>
+			{{else}}
+				<span class="item">Anonymous</span>
+			{{/if}}
+			, 	<span class="item">{{formatTime timestamp}}</span>
+		</div>
 	{{else}}
 		Not found...
 	{{/if}}
 </template>
 
 <template name="poemFooter">
-	<a class="item edit">
-	  	<i class="pencil icon"></i>
-	    	Edit
-	  </a>
+	{{#if youAreAutor}}
+		{{#if editing}}
+		<a class="item saveit">
+		  	<i class="save icon"></i>
+		    	Save
+		</a>
+		{{else}}
+		<a class="item edit">
+		  	<i class="pencil icon"></i>
+		    	Edit
+		</a>
+		{{/if}}
+	<a class="item delete">
+		<i class="remove icon"></i>
+		Delete
+	</a>
+	{{/if}}
 	<div class="test">
 		{{#if author}}
 			<span class="item">{{author}}</span>

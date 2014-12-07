@@ -13,6 +13,12 @@ paginatedPoems = new Meteor.Pagination(Poems, {
 });
 */
 
+Template.connectionStatus.helpers({
+  'connectionLost' : function(){
+    return !Meteor.status().connected;
+  }
+});
+
 var toggleFullScreen = function() {
       if (!document.fullscreenElement &&    // alternative standard method
             !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
@@ -44,8 +50,36 @@ Template.sidebar.events({
       },
       'click .login' : function(event){
             $('.loginmodal').modal('show');
-      }
+      },
+      'click .logout' : function(event){
+            Meteor.logout();
+      },
+      'click .newPoem' : function(event){
+            Poems.insert({
+              timestamp: Date.now(),
+              user: Meteor.userId(),
+              poem: "<p>Lorem ipsum dolor sit amet...</p>",
+              title: "New poem",
+            }, function(error,data){
+              if(error){ 
+              } else {
+                Router.go('/poems/'+data);
+              }
+            });
+      },
 });
+
+Template.scheleton.rendered = function(){
+    document.addEventListener("webkitfullscreenchange", function(event){
+          Session.set('fullscreen', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
+      });
+      document.addEventListener("mozfullscreenchange", function(event){
+          Session.set('fullscreen', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
+      });
+      document.addEventListener("msfullscreenchange", function(event){
+          Session.set('fullscreen', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
+      });
+};
 
 Template.scheleton.events({
     'click .home': function(event){
@@ -65,23 +99,71 @@ Template.poems.helpers({
     }
 });
 
-Template.poemFooter.events({
-      'click .edit' : function(){ 
-        editor = new MediumEditor('#poem', {
-            //disableToolbar: true,
-            forcePlainText: true,
-            buttons: ['bold','italic','quote'],
-            placeholder: "..."
-      });
 
-      document.addEventListener("webkitfullscreenchange", function(event){
-          Session.set('fullscreen', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
-      });
-      document.addEventListener("mozfullscreenchange", function(event){
-          Session.set('fullscreen', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
-      });
-      document.addEventListener("msfullscreenchange", function(event){
-          Session.set('fullscreen', document.webkitFullscreenElement != null || document.mozFullScreenElement != null || document.msFullscreenElement != null);
-      });
-    }
+var editor = null;
+var titleEditor = null;
+Session.set('editingPoem',false);
+
+Template.poemFooter.destroyed = function(){
+    Session.set('editingPoem',false);
+}
+
+Template.poemFooter.helpers({
+      'youAreAutor' : function(){
+            return Meteor.userId() && (Poems.find().count() == 1) && (Meteor.userId() == Poems.findOne().user);
+      },
+      'editing' : function(){
+            return Session.get('editingPoem');
+      }
+});
+
+Template.poemFooter.events({
+      'click .edit' : function(){
+          editor = new MediumEditor('#poem', {
+                  //disableToolbar: true,
+                  forcePlainText: true,
+                  buttons: ['bold','italic','quote'],
+                  placeholder: "..."
+            });
+
+            titleEditor = new MediumEditor('#poemTitle', {
+                  disableToolbar: true,
+                  forcePlainText: true,
+                  placeholder: "..."
+            });
+        Session.set('editingPoem',true);
+      },
+      'click .saveit' : function(){
+        var title = document.getElementById('poemTitle').textContent;
+        if(title.length==0){
+          title = "No title";
+        }
+        document.getElementById('poemTitle').innerHTML="";
+        var poem = editor.elements[0].innerHTML;
+        if(Poems.find().count() == 1){
+            Poems.update({
+              '_id': Poems.findOne()._id
+            }, {
+              $set: {
+                poem: poem,
+                title: title
+              }
+            },function(error){
+              if(error){
+
+              } else {
+                document.getElementById('poemTitle').innerHTML = title;
+                Session.set('editingPoem',false);
+                editor.deactivate();
+                titleEditor.deactivate();
+                delete editor, titleEditor;
+              }
+            });
+        }
+      },
+      'click .delete' : function(){
+            Router.go('/');
+            var current = Poems.findOne()._id;
+            Poems.remove({'_id': current});
+      }
 });

@@ -117,6 +117,10 @@ Template.poemFooter.helpers({
       }
 });
 
+Template.poemFooter.rendered = function(){
+  document.getElementById('poem').innerHTML = Poems.findOne().poem;
+}
+
 Template.poemFooter.events({
       'click .edit' : function(){
           editor = new MediumEditor('#poem', {
@@ -148,7 +152,7 @@ Template.poemFooter.events({
                 poem: poem,
                 title: title
               }
-            },function(error){
+            },function(error,id,object){
               if(error){
 
               } else {
@@ -157,6 +161,7 @@ Template.poemFooter.events({
                 editor.deactivate();
                 titleEditor.deactivate();
                 delete editor, titleEditor;
+                document.getElementById('poem').innerHTML = poem;
               }
             });
         }

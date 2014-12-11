@@ -4,7 +4,11 @@ Template.registerHelper("formatTime", function(timestamp) {
 });
 
 Template.registerHelper("capitalize", function(str){
-    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	if(str) {
+		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	} else {
+		return null;
+	}
 });
 
 Template.registerHelper("capitalizeTrim", function(str){
@@ -41,4 +45,15 @@ Template.registerHelper("trim", function(str){
 	} else {
 		return str;
 	}
+});
+
+Template.registerHelper("empty", function(str){
+	var el = document.createElement( 'div' );
+    	el.innerHTML = str;
+    	var test = el.textContent;
+    	test = test.replace(/\s+/g, '');
+    	if(test.length < 1){
+      		return true;
+    	}
+    	return false;
 });

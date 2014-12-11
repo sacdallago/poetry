@@ -1,16 +1,14 @@
 <template name="scheleton">
 	{{> connectionStatus}}
     	{{> sidebar}}
-	    <div class="ui launch icon button fixed attached top right black home noprint" >
-	  	<i class="icon content"></i>
-	</div>
-	
-    	{{#if currentUser}}
-    	{{else}}
-    		{{> login}}
-    	{{/if}}
-
   	<div class="pusher">
+  		<div class="ui launch icon button fixed attached top right black home noprint" >
+	  		<i class="icon content"></i>
+		</div>
+  		{{#if currentUser}}
+	    	{{else}}
+	    		{{> login}}
+	    	{{/if}}
 		{{#AnimateWithVelocity}}
 	   	<div data-animate data-property="opacity" data-duration="500" data-from-value="0" data-to-value="1">
 			<div class="container">
@@ -196,7 +194,13 @@
 <template name="poemPills">
 	<div class="ui card">
 	  <div class="content">
-	    <a class="header" href="/poems/{{_id}}">{{capitalizeTrim title}}</a>
+	    <a class="header" href="/poems/{{_id}}">
+	    	{{#if empty title}}
+	    		[[No Title]]	
+	    	{{else}}
+	    		{{capitalizeTrim title}}
+	    	{{/if}}
+	    </a>
 	    <div class="meta">
 	      <span class="date">{{formatTime timestamp}}</span>
 	    </div>
@@ -210,8 +214,11 @@
 <template name="poem">
 	{{#if _id}}
 		<article id="poemContainer">
-			<h1 id="poemTitle" style="magin:0;border:0;padding0;">{{capitalize title}}</h1>
-			<div id="poem"></div>
+			
+			<h1 id="poemTitle" class="{{#if emptyTitle}}emptyTitle{{/if}}"></h1>
+			<div id="poem" class="{{#if emptyPoem}} emptyPoem {{/if}}" ></div>
+			
+			
 		</article>
 		<div class="print" style="line-height: 100px">
 			by 

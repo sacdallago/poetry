@@ -21,6 +21,14 @@
     margin: 0;
 }
 
+.emptyTitle{
+    border-bottom: 1px solid black;
+}
+
+.emptyPoem{
+    border-bottom: 1px solid black;
+}
+
 [contenteditable="true"]:active,
 [contenteditable="true"]:focus{
     border:none;

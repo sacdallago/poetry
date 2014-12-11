@@ -2,17 +2,17 @@ Router.route('/poems/:_id',{
 	loadingTemplate: 'loading',
 
 	waitOn: function () {
-    // return one handle, a function, or an array
-    	return Meteor.subscribe('poems', this.params._id);
+      // return one handle, a function, or an array
+    	       return Meteor.subscribe('poems', this.params._id);
   	},
 
   	data: function () {
-  		return Poems.findOne({_id: this.params._id});
+  		  return Poems.findOne({_id: this.params._id});
   	},
 
   	action: function () {
-    	this.render('poem');
-      this.render('poemFooter', {to: 'poemInfo'});
+    	      this.render('poem');
+            this.render('poemFooter', {to: 'poemInfo'});
   	}
 });
 
@@ -29,10 +29,14 @@ Router.route('/', {
 });
 
 Router.route('/register', {
-  loadingTemplate: 'loading',
+    loadingTemplate: 'loading',
 
     action: function () {
-      this.render('register');
+      if(Meteor.userId()){
+        this.redirect('/');
+      } else {
+        this.render('register');
+      }
     }
 });
 

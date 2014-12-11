@@ -58,8 +58,8 @@ Template.sidebar.events({
             Poems.insert({
               timestamp: Date.now(),
               user: Meteor.userId(),
-              poem: "<p>Lorem ipsum dolor sit amet...</p>",
-              title: "New poem",
+              poem: "",
+              title: "",
             }, function(error,data){
               if(error){ 
               } else {
@@ -99,13 +99,16 @@ Template.poems.helpers({
     }
 });
 
-
 var editor = null;
 var titleEditor = null;
 Session.set('editingPoem',false);
 
 Template.poemFooter.destroyed = function(){
     Session.set('editingPoem',false);
+}
+
+Template.poem.destroyed = function(){
+    delete editor, titleEditor;
 }
 
 Template.poemFooter.helpers({
@@ -117,58 +120,88 @@ Template.poemFooter.helpers({
       }
 });
 
-Template.poemFooter.rendered = function(){
-  document.getElementById('poem').innerHTML = Poems.findOne().poem;
-}
-
-Template.poemFooter.events({
-      'click .edit' : function(){
-          editor = new MediumEditor('#poem', {
+Template.poem.rendered = function(){
+            editor = new MediumEditor('#poem', {
                   //disableToolbar: true,
                   forcePlainText: true,
                   buttons: ['bold','italic','quote'],
-                  placeholder: "..."
+                  placeholder: ""
             });
+
+            editor.elements[0].innerHTML = Poems.findOne().poem;
 
             titleEditor = new MediumEditor('#poemTitle', {
                   disableToolbar: true,
                   forcePlainText: true,
-                  placeholder: "..."
+                  placeholder: ""
             });
+
+            titleEditor.elements[0].innerHTML = Poems.findOne().title;
+
+            editor.deactivate();
+            titleEditor.deactivate();
+}
+
+Template.poemFooter.events({
+      'click .edit' : function(){
+        editor.activate();
+        titleEditor.activate();
         Session.set('editingPoem',true);
       },
       'click .saveit' : function(){
+        editor.deactivate();
+        titleEditor.deactivate();
+
         var title = document.getElementById('poemTitle').textContent;
         if(title.length==0){
-          title = "No title";
+          title = "";
         }
-        document.getElementById('poemTitle').innerHTML="";
+
         var poem = editor.elements[0].innerHTML;
+
         if(Poems.find().count() == 1){
             Poems.update({
-              '_id': Poems.findOne()._id
+              '_id': this._id
             }, {
               $set: {
                 poem: poem,
                 title: title
               }
-            },function(error,id,object){
+            }, function(error,id,object){
               if(error){
 
               } else {
-                document.getElementById('poemTitle').innerHTML = title;
                 Session.set('editingPoem',false);
-                editor.deactivate();
-                titleEditor.deactivate();
-                delete editor, titleEditor;
-                document.getElementById('poem').innerHTML = poem;
               }
             });
         }
       },
       'click .delete' : function(){
+            var current = this._id;
             Router.go('/');
-            var current = Poems.findOne()._id;
             Poems.remove({'_id': current});
       }
+});
+
+Template.poem.helpers({
+  'emptyTitle' : function(){
+     var el = document.createElement( 'div' );
+    el.innerHTML = this.title;
+    var poem = el.textContent;
+    poem = poem.replace(/\s+/g, '');
+    if(poem.length < 1){
+      return !Session.get('editingPoem') && true;
+    }
+    return false;
+  },
+  'emptyPoem' : function(){
+    var el = document.createElement( 'div' );
+    el.innerHTML = this.poem;
+    var poem = el.textContent;
+    poem = poem.replace(/\s+/g, '');
+    if(poem.length < 1){
+      return !Session.get('editingPoem') && true;
+    }
+    return false;
+  }
 });
